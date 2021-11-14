@@ -1,0 +1,404 @@
+第二章代码
+
+顺序表初始化
+Status Init_SqList(Sqlist *L)
+{
+	L->elem_array=(ElemType*)malloc(MAX_SIZE*sizeof(ElemType));
+	if(!L->elem_array)
+	return ERROR;
+	else{
+		L->lengh=0;
+		return OK;
+		}
+} 
+
+顺序表的插入
+Status Insert_SqList(Sqlist *L,int i,ElemType e)
+{
+	int j;
+	if(i<0||i>L->lengh-1)
+	return ERROR;
+	if(L->lengh>=MAX_SIZE）
+	{
+		printf("线性表溢出!\n");
+		return ERROR;
+	}
+	for(j=L->lengh-1;j>=i-1;--j)
+	L->Elem_array[j+1]=L->Elem_array[j];//i-1位置以后的所有结点后移
+	L->Elem_array[i-1]=e;//在i-位置插入结点
+	L->lengh++;
+	return OK;
+}
+
+线性表的删除
+ElemType Delete_SqList(Sqlist *L,int i)
+{
+	int k; 
+	ElemType x;
+	if(L->lengh==0)
+	{
+		printf("线性表L为空!\n");
+		return ERROR;
+	}
+	else if(i<1||i>L->lengh)
+	{
+		printf("要删除的数据元素不存在!\n");
+		return ERROR;
+	}
+	else
+	{
+		x=L->Elem_array[i-1];//保存结点的值
+		for(k=i;k<L->lengh;k++)
+		L->Elem_array[k-1]=L->Elem_array[k];// i位置以后的所有结点前移
+		L->lengh--;
+		return(x);
+	}
+}
+
+线性表的查找定位删除
+Status Locate_Delete_SqList(Sqlist *L;ElemmType x)//删除线性表L中值为x的第一个结点
+{
+	int i=0,k;
+	while(i<L->lengh)//查找值为x的第一个结点
+	if(L->Elem_array[i]!=x)i++;
+	else
+	{	
+		for(k=i+1;k<L->lengh;k++)
+		L->Elem_array[k-1]=L->Elem_array[k];
+		L->lengh--;
+		break;
+	}
+	if(i<L->lengh)
+	{
+		printf("要删除的数据元素不存在！\n");
+		return ERROR;
+	}
+	return OK;
+}
+
+链式结构结点描述
+typedef struct LNode
+{
+	ElemType data;//数据域 保存结点的值
+	struct Lnode *next;//指针域
+}LNode;//结点的类型
+
+结点的赋值
+LNode *p;
+p=(LNode*)malloc(sizeof(LNode));
+p->data=20;
+p->next=NULL;
+
+头插入法建表
+LNode *create_LinkList(void)//头插入法创建单链表,链表的头结点head作为返回值
+{
+	int data;
+	LNode *head, *p;
+	head=(LNode *)malloc(sizeof(LNode));
+	head->next=NULL;// 创建链表的表头结点head
+	while(1)
+	{
+		scanf("%d",&data);
+		if(data==32767) break;
+		p=(LNode *)malloc(sizeof(LNode));
+		p->data=data;//数据域赋值
+		p->next=head->next;
+		head->next=p;//钩链，新创建的结点总是作为第一个结点
+	}
+	return(head);
+}
+
+尾插入法建表
+LNode *create_LinkList(void)//未插入法创建单链表，链表的头结点head作为返回值
+{
+	int data;
+	LNode *head,*p,*q;
+	head=p=(LNode *)malloc(sizeof(LNode));
+	p->next=NULL;//创建单链表的表头结点head
+	while(1)
+	{
+		scanf("%d",&data);
+		if(data==32767)break;
+		q=(LNode *)malloc(sizeof(LNode));
+		q->data=data;
+		q->next=p->next;//数据域赋值
+		p->next=q;
+		p=q;//新创建的结点总是作为最后一个结点
+	}
+	return(head);
+}
+
+单链表的查找
+ElemType Get_Elem(LNode *L,int i)
+{
+	int j; LNode *P;
+	p=L->next; j=1;//使p指向第一个结点
+	while(p!=NULL&&j<i)
+	{
+		p=p->next;//移动指针p，j计数
+		j++;
+	}
+	if(j!=i)
+	return(-32768);
+	else
+	return(p->data);//p为NULL表示i太大 j>i表示i为0
+}
+
+按值查找
+LNode *Locate_Node(LNode *L,int key)//在以L为头结点的单链表中查找值为key的第一个结点
+{
+	LNode *p=L->next;
+	while(!=NULL&&p->data!=key) p=p->next;
+	if(p->data==key) return p;
+	else
+	{
+		printf("所要查找的结点不存在!!\n")
+		return(NULL);
+	}
+}
+
+单链表的插入
+void Insert_LNode(LNode *L, int i , ElemType e)//在L为头结点的单链表的第i个位置插入e
+{
+	int j=0; LNode *p, * q;
+	p=L->next;
+	while(p!=NULL&&j<i-1)
+	{
+		p=p->next;
+		j++;
+	}
+		if(j!=i-1) printf("i太大或i为0！\n")
+		else
+		{
+			q=(LNode *)malloc(sizeof(LNode));
+			q->data=e; q->next=p->next;
+			p->next=q;
+		}
+}
+
+单链表的删除
+void Delete_LinkList(LNode *L,int i)//删除以L为头结点的单链表中的第i个节点
+{
+	int j=1; LNode *p, *q;
+	p=L; q=L->next;
+	while(p->next!=NULL&&j<i)
+	{
+		p=q; q=q->next; j++;
+	}
+	if(j!=i) printf("i太大或i为0!\n")
+	else
+	{
+		p->next=q->next;
+		free(q);
+	}
+}
+
+按值删除
+void Delete_LinList(LNode *L, int key)//删除以L为头结点的单链表中值为key的第一个结点
+{
+	LNode *p=L, *q=L->next;
+	while(q!=NULL&&q->data!=key)
+	{
+		p=q; q=q->next;
+	}
+	if (q->data==key)
+	{
+		p->next=q->next; free(q);
+	}
+	else
+		peintf("所要删除的结点不存在!!\n");
+}
+void  Delete_LinList(LNode *L, int key)//删除以L为头结点的单链表中值为key的第一个结点
+{
+	LNode *p=L, *q=L->next;
+	while(q!=NULL)
+	{
+		if(q->next==key)
+		{
+			p->next=q->next;
+			free(q); q=p->next;
+		}
+		else
+		{ p=q; q=q->next;}
+	}
+}
+void Delete_Node_value(LNode *L)//删除以L为头结点的单链表中所有值相同的结点
+{	
+	LNode *p=L->next, *q, *ptr;
+	while(p!=NULL)//检查链表中所有结点
+	{
+		*q=p, *ptr=p->next;//检查结点p的所有后继结点ptr
+		while(ptr!=NULL) 
+		{
+			if(ptr->data==p->data)
+			{
+				q->next=ptr->next; free(ptr);
+				ptr=q->next;
+			}
+			else
+			{
+				q=ptr; ptr=ptr->next;
+			}
+		}
+		p=p->next;
+	}
+}
+
+单链表的合并
+LNode *Merge_LinkList(LNode *La, LNode *Lb)//合并以La, Lb为头结点的两个有序单链表 
+{
+	LNode *Lc, *pa, *pb, *pc, *ptr;
+	Lc=La; pc=La; pa=La->next; pb=Lb->next;
+	while(pa!=NULL&& pb!=NULL)
+	{
+		if(pa->data<pb->data)//将pa所指的结点合并，pa指向下一个结点 
+		{
+			pc-next=pa; pc=pa; pa=pa->next;
+		}
+		if(pa->data>pb->data)//将pa所指的结点合并，pa指向下一个结点
+		{
+			pc->next=pb; pc=pb ; pb=pb->next;
+		}
+		if(pa->data==pb->data)//将pa所指的结点合并，pb所指结点删除
+		{
+			pc->next=pa; pc=pa; pa=pa->next;
+			ptr=pb; pb=pb->next; free(ptr);
+		}
+	}
+		if(pa!=NULL)  pc->next=pa;
+		else pc->next=pb;//将剩余的结点链上
+		free(Lb); return(Lc);
+}
+
+双向链表的插入
+S=(DulNode *)malloc(sizeof(DulNode));
+S->data=e;
+S->next=p->next; p->next->prior=S
+p->next=S; S->prior=p;//钩链次序先右后左
+
+S=(DulNode *)malloc(sizeof(DulNode));
+S->data=e;
+p->next=S; S->next=q;
+S->prior=p; q->prior=S;
+
+双向链表的结点删除
+先断链 后释放
+p->prior->next=p->next;
+p->next->peior=p->peior;
+free(p);
+
+一元多项式的表示和相加
+表示
+顺序存储表示的类型
+typedef struct
+{
+	float coef;//系数部分
+	int expn;//指数部分
+}ElemType;
+链式存储表示的类型
+typedef struct ploy
+{
+	float coef;//系数部分
+	int expn;//指数部分
+	struct ploy *next;
+}ploy;
+
+在原来两个多项式链表的基础上进行相加
+相加后原来两个多项式链表就不存在。
+Ploy *add_ploy(ploy *La, ploy *Lb)//将以La ，Lb为头指针表示的一元多项式相加
+{
+	ploy *Lc, *pc, *pa, *pb, *ptr; float x;
+	Lc=pc=La; pa=La->next; pb=Lb->next;
+	while(pa!=NULL&&pb!=NULL)
+	{
+		if(pa->expn<pb->expn)//将pa所指的结点合并，pa指向下一个结点
+		{
+			pc->next=pa; pc=pa; pa=pa-next;
+		}
+		if(pa->expn>pb->expn)//将pb所指的结点合并，pb指向下一个结点
+		{
+			pc->next=pb; pc=pb; pb=pb-next;
+		}
+		else
+		{
+			x=pa->coef+pb->coef;
+			if(abs(x)<=1.0e-6)
+			{
+				ptr=pa; pa=pa->next;free(ptr);
+				ptr=pb; pb=pb->next;free(ptr);
+			}
+			else
+			{
+				pc->next=pa; pa->coef=x;
+				pc=pa; pa=pa->next;
+				ptr=pb; pb=pb->next; free(pb);
+			}
+		}
+	}//end of while
+		if(pa==NULL)pc->next=pb;
+		else pc->next=pa;
+		return(Lc);
+}
+
+生成一个新的相加后的结果多项式链表
+原来两个多项式链表依然存在。
+Ploy *add_ploy(ploy *La, ploy *Lb)//将以La ，Lb为头指针表示的一元多项式相加，生成一个新的结果多项式 
+{
+	ploy *Lc, *pc, *pa, *pb, *p; float x;
+	Lc=pc=(ploy *)malloc(sizeof(ploy));
+	pa=La->next;pb=Lb->next;
+	while(pa!=NULL&&pb!=NULL)
+	{
+		if(pa->expn<pb->expn)
+		{
+			p=(ploy *)malloc(sizeof(ploy));
+			p->coef=pa->coef; p->expn=pa->expn;
+			p->next=NULL;//生成一新的结果结点并赋值
+			pc->next=p;pc=p; pa=pa->next;
+		}
+		if(pa->expn>pb->expn)
+		{
+			p=(ploy *)malloc(sizeof(ploy));
+			p->coef=pb->coef; p->expn=pb->expn;
+			p->next=NULL;//生成一新的结果结点并赋值
+			pc->next=p;pc=p; pb=pb->next;
+		}//生成的结点插入到结果链表的最后，pb指向下一个结点
+		if(pa->expn==pb->expn)
+		{
+			x=pa->coef+pb->coef;
+			if(abs(x)<=1.0e-6)//系数和为0，pa, pb分别直接后继结点
+			{
+				pa=pa->next;pb=pb->next;
+			}
+			else//若系数和不为0，生成的结点插入到结果链表的最后， pa, pb分别直接后继结点 
+			{
+				p=(ploy *)malloc(sizeof(ploy));
+				p->coef=x; p->expn=pb->expn;
+				p->next=NULL; //生成一个新的结果结点并赋值
+				pc->next=p; pc=p;
+				pa=pa->next; pb=pb->next;
+			}
+		}
+	}
+	if(pb!=NULL)
+	while(pb!=NULL)
+	{
+		p=(ploy *)malloc(sizeof(ploy));
+		p->coef=pb->coef; p->expn=pb->expn;
+		p->next=NULL; //生成一个新的结果结点并赋值
+		pc->next=p; pc=p;
+		pb=pb->next;
+	}
+	if(pa!=NULL)
+	while(pa!=NULL)
+	{
+		p=(ploy *)malloc(sizeof(ploy));
+		p->coef=pb->coef; p->expn=pa->expn;
+		p->next=NULL; //生成一个新的结果结点并赋值
+		pc->next=p; pc=p;
+		pa=pa->next;
+	}
+	return (Lc);
+}
+				
+
